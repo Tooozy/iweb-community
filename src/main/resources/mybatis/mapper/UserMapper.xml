@@ -3,7 +3,15 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.toozy.bbs.mapper.UserMapper">
-    <insert id="insert" parameterType="com.toozy.bbs.pojo.User">
+    <insert id="insertUser" parameterType="com.toozy.bbs.pojo.User">
         insert into BBS.user (account_id, name, token, gmt_create, gmt_modified) values (#{accountId},#{name},#{token},#{gmtCreate},#{gmtModified});
     </insert>
+
+    <select id="findByToken" resultType="com.toozy.bbs.pojo.User">
+        select *
+        from BBS.user
+        where token = #{token};
+    </select>
+
+
 </mapper>
