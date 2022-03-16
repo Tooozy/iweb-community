@@ -14,5 +14,11 @@
         where token = #{token};
     </select>
 
+    <select id="findById" resultType="com.toozy.bbs.pojo.User">
+        select *
+        from BBS.user
+        where id = #{creatorId};
+    </select>
+
 
 </mapper>

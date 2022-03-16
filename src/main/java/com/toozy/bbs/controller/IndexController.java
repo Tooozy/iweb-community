@@ -1,10 +1,14 @@
 package com.toozy.bbs.controller;
 
+import com.toozy.bbs.dto.PaginationDTO;
 import com.toozy.bbs.mapper.UserMapper;
 import com.toozy.bbs.pojo.User;
+import com.toozy.bbs.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -13,10 +17,16 @@ import javax.servlet.http.HttpServletRequest;
 public class IndexController {
 
     @Autowired
+    private QuestionService questionService;
+    @Autowired
     private UserMapper userMapper;
 
     @GetMapping("/")
-    public String index(HttpServletRequest request){
+    public String index(HttpServletRequest request,
+                        Model model,
+                        @RequestParam(value= "page",defaultValue="1")Integer page,
+                        @RequestParam(value= "size",defaultValue="8")Integer size
+    ){
         Cookie[] cookies = request.getCookies();
         if (cookies != null ){
             for (Cookie cookie : cookies) {
@@ -32,6 +42,17 @@ public class IndexController {
         } else {
             return "index";
         }
+
+        PaginationDTO paginationDTO= questionService.queryAllQuestionForPage(page, size);
+
+
+//        System.out.println(questionDTOList);//测试
+
+
+        model.addAttribute("pagination",paginationDTO);
+
+
+
 
         return "index";
     }

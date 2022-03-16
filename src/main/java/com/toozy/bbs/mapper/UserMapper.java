@@ -16,4 +16,5 @@ public interface UserMapper {
     User findByToken(@Param("token") String token);
 
 
+    User findById(@Param("creatorId") Integer creatorId);
 }
