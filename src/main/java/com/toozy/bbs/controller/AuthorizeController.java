@@ -51,23 +51,43 @@ public class AuthorizeController {
         accessTokenDTO.setClient_secret(clientSecret);
         String accessToken = githubProvider.getAccessToken(accessTokenDTO);
         GithubUser githubUser = githubProvider.getUser(accessToken);
-        if (githubUser != null){
+
+
+        System.out.println(githubUser);
+
+
+        if (githubUser.getId() != null){
             User user = new User();
             String token = UUID.randomUUID().toString();
             user.setToken(token);
             user.setName(githubUser.getLogin());
             user.setAccountId(String.valueOf(githubUser.getId()));
-            user.setGmtCreate(System.currentTimeMillis());
-            user.setGmtModified(user.getGmtCreate());
             user.setAvatarUrl(githubUser.getAvatarUrl());
-            userMapper.insertUser(user);
-
+            User byAccountId = userMapper.findByAccountId(githubUser.getId());
+            if (byAccountId == null){
+                user.setGmtCreate(System.currentTimeMillis());
+                user.setGmtModified(user.getGmtCreate());
+                userMapper.insertUser(user);
+            }else {
+                user.setGmtModified(System.currentTimeMillis());
+                userMapper.updateUser(user.getAccountId(),user.getAvatarUrl(),user.getGmtModified(),token);
+            }
             response.addCookie(new Cookie("token",token));
-
             return "redirect:/";
         }else {
             return "redirect:/";
         }
 
     }
+
+
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request,HttpServletResponse response){
+        request.getSession().removeAttribute("user");
+        Cookie cookie = new Cookie("token",null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+        return "redirect:/";
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.toozy.bbs.mapper;
 
 
+import com.toozy.bbs.pojo.Question;
 import com.toozy.bbs.pojo.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -17,4 +18,11 @@ public interface UserMapper {
 
 
     User findById(@Param("creatorId") Integer creatorId);
+
+
+    User findByAccountId(@Param("accountId") Long id);
+
+
+    void updateUser(@Param("accountId") String accountId, @Param("avatarUrl") String avatarUrl, @Param("gmtModified") Long gmtModified, @Param("token") String token);
+
 }

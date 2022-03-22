@@ -21,4 +21,16 @@
     </select>
 
 
+    <select id="findByAccountId" resultType="com.toozy.bbs.pojo.User">
+        select *
+        from BBS.user
+        where user.account_id = #{accountId};
+    </select>
+
+    <update id="updateUser" parameterType="com.toozy.bbs.pojo.User">
+        update BBS.user
+        set gmt_modified = #{gmtModified}, avatar_url = #{avatarUrl}, token = #{token}
+        where account_id = #{accountId};
+    </update>
+
 </mapper>

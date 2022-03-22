@@ -17,9 +17,9 @@ import javax.servlet.http.HttpServletRequest;
 public class IndexController {
 
     @Autowired
-    private QuestionService questionService;
+    UserMapper userMapper;
     @Autowired
-    private UserMapper userMapper;
+    private QuestionService questionService;
 
     @GetMapping("/")
     public String index(HttpServletRequest request,
@@ -27,6 +27,10 @@ public class IndexController {
                         @RequestParam(value= "page",defaultValue="1")Integer page,
                         @RequestParam(value= "size",defaultValue="8")Integer size
     ){
+
+        PaginationDTO paginationDTO= questionService.queryAllQuestionForPage(page, size);
+        model.addAttribute("pagination",paginationDTO);
+
         Cookie[] cookies = request.getCookies();
         if (cookies != null ){
             for (Cookie cookie : cookies) {
@@ -42,15 +46,6 @@ public class IndexController {
         } else {
             return "index";
         }
-
-        PaginationDTO paginationDTO= questionService.queryAllQuestionForPage(page, size);
-
-
-//        System.out.println(questionDTOList);//测试
-
-
-        model.addAttribute("pagination",paginationDTO);
-
 
 
 

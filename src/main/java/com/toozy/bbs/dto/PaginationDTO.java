@@ -36,7 +36,7 @@ public class PaginationDTO {
         } else {
             showPrevious = true;
         }
-        if (page == totalPage) {
+        if (page == totalPage ) {
             showNext = false;
         } else {
             showNext = true;
@@ -51,6 +51,14 @@ public class PaginationDTO {
         } else {
             showEndPage = true;
         }
+
+        if (totalPage ==0 ){
+            this.showNext = false;
+            this.showEndPage = false;
+        }
+
+
+
     }
 
 

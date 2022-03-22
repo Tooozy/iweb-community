@@ -18,4 +18,29 @@
         from BBS.question
     </select>
 
+    <select id="queryAllQuestionByCreatorId" resultType="com.toozy.bbs.pojo.Question">
+        select *
+        from BBS.question
+        where creator = #{creator}
+    </select>
+
+    <select id="totalByCreatorId" resultType="java.lang.Integer">
+        select count(1)
+        from BBS.question
+        where creator = #{creator}
+    </select>
+
+
+    <select id="findQuestionById" resultType="com.toozy.bbs.pojo.Question">
+        select *
+        from BBS.question
+        where id = #{id}
+    </select>
+
+    <update id="updateQuestion" parameterType="com.toozy.bbs.pojo.Question">
+        update BBS.question
+        set gmt_modified = #{gmtModified}, title = #{title}, description = #{description}, tag = #{tag}
+        where id = #{id};
+    </update>
+
 </mapper>
