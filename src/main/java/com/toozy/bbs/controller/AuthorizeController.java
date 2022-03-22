@@ -6,6 +6,7 @@ import com.toozy.bbs.dto.AccessTokenDTO;
 import com.toozy.bbs.dto.GithubUser;
 import com.toozy.bbs.mapper.UserMapper;
 import com.toozy.bbs.pojo.User;
+import com.toozy.bbs.pojo.UserExample;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 import java.util.UUID;
 
 @Controller
@@ -63,14 +65,29 @@ public class AuthorizeController {
             user.setName(githubUser.getLogin());
             user.setAccountId(String.valueOf(githubUser.getId()));
             user.setAvatarUrl(githubUser.getAvatarUrl());
-            User byAccountId = userMapper.findByAccountId(githubUser.getId());
-            if (byAccountId == null){
+
+
+            UserExample example = new UserExample();
+            example.createCriteria().andAccountIdEqualTo(user.getAccountId());
+            List<User> byAccountId = userMapper.selectByExample(example);
+
+
+
+            if (byAccountId.size() == 0){
                 user.setGmtCreate(System.currentTimeMillis());
                 user.setGmtModified(user.getGmtCreate());
-                userMapper.insertUser(user);
+                userMapper.insert(user);
             }else {
-                user.setGmtModified(System.currentTimeMillis());
-                userMapper.updateUser(user.getAccountId(),user.getAvatarUrl(),user.getGmtModified(),token);
+                User dbUser = byAccountId.get(0);
+                User updateUser = new User();
+                updateUser.setGmtModified(System.currentTimeMillis());
+                updateUser.setAvatarUrl(user.getAvatarUrl());
+                updateUser.setName(user.getName());
+                updateUser.setToken(user.getToken());
+
+                UserExample example1 = new UserExample();
+                example1.createCriteria().andIdEqualTo(dbUser.getId());
+                userMapper.updateByExampleSelective(updateUser, example1);
             }
             response.addCookie(new Cookie("token",token));
             return "redirect:/";

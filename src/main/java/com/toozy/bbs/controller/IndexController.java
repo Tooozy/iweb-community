@@ -3,6 +3,7 @@ package com.toozy.bbs.controller;
 import com.toozy.bbs.dto.PaginationDTO;
 import com.toozy.bbs.mapper.UserMapper;
 import com.toozy.bbs.pojo.User;
+import com.toozy.bbs.pojo.UserExample;
 import com.toozy.bbs.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Controller
 public class IndexController {
@@ -36,9 +38,12 @@ public class IndexController {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals("token")){
                     String token = cookie.getValue();
-                    User user = userMapper.findByToken(token);
-                    if (user != null){
-                        request.getSession().setAttribute("user",user);
+                    UserExample example = new UserExample();
+                    example.createCriteria().andTokenEqualTo(token);
+                    List<User> users = userMapper.selectByExample(example);
+
+                    if (users.size() != 0){
+                        request.getSession().setAttribute("user",users.get(0));
                     }
                     break;
                 }

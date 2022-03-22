@@ -5,6 +5,7 @@ import com.toozy.bbs.mapper.QuestionMapper;
 import com.toozy.bbs.mapper.UserMapper;
 import com.toozy.bbs.pojo.Question;
 import com.toozy.bbs.pojo.User;
+import com.toozy.bbs.pojo.UserExample;
 import com.toozy.bbs.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,7 +15,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Controller
 public class PublishController {
@@ -40,6 +43,13 @@ public class PublishController {
             HttpServletRequest request,
             Model model
     ){
+
+
+
+
+
+
+
         model.addAttribute("title",title);
         model.addAttribute("description",description);
         model.addAttribute("tag",tag);
@@ -80,7 +90,8 @@ public class PublishController {
 
 
 
-        Question questionById = questionMapper.findQuestionById(id);
+        Question questionById = questionMapper.selectByPrimaryKey(id);
+
 
         model.addAttribute("title",questionById.getTitle());
         model.addAttribute("description",questionById.getDescription());
